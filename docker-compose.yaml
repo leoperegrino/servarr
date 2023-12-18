@@ -1,0 +1,162 @@
+version: "3.8"
+services:
+
+  homer:
+    image: b4bz/homer:latest
+    container_name: homer
+    restart: unless-stopped
+    ports:
+      - 8081:8080
+    environment:
+      - INIT_ASSETS=1
+      # - SUBFOLDER=null
+    volumes:
+    - ./config/homer:/www/assets
+
+  nginx:
+    image: linuxserver/nginx:latest
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./config/nginx:/config
+
+  pihole:
+    image: pihole/pihole:latest
+    container_name: pihole
+    restart: unless-stopped
+    ports:
+      # ensure rpi's /etc/resolvconf.conf has "name_servers=127.0.0.1"
+      - 53:53/tcp
+      - 53:53/udp
+      # or use STATIC_IP below
+      # - ${STATIC_IP}:53:53/tcp
+      # - ${STATIC_IP}:53:53/udp
+      - 67:67/udp
+      - 8080:80/tcp
+    environment:
+      - TZ=${TZ}
+      - WEBPASSWORD=
+    volumes:
+      - ./config/pihole/etc-pihole:/etc/pihole
+      - ./config/pihole/etc-dnsmasq.d:/etc/dnsmasq.d
+    cap_add:
+      - NET_ADMIN
+
+  radarr:
+    image: linuxserver/radarr:latest
+    container_name: radarr
+    restart: unless-stopped
+    ports:
+      - 7878:7878
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./config/radarr:/config
+      - ./data:/data
+
+  sonarr:
+    image: linuxserver/sonarr:latest
+    container_name: sonarr
+    restart: unless-stopped
+    ports:
+      - 8989:8989
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./config/sonarr:/config
+      - ./data:/data
+
+  prowlarr:
+    image: linuxserver/prowlarr:latest
+    container_name: prowlarr
+    restart: unless-stopped
+    ports:
+      - 9696:9696
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./config/prowlarr:/config
+
+  bazarr:
+    image: linuxserver/bazarr:latest
+    container_name: bazarr
+    restart: unless-stopped
+    ports:
+      - 6767:6767
+    environment:
+      - TZ=${TZ}
+      - PUID=${PUID}
+      - PGID=${PGID}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./config/bazarr:/config
+      - ./data:/data
+
+  transmission:
+    image: linuxserver/transmission:latest
+    container_name: transmission
+    restart: unless-stopped
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TRANSMISSION_WEB_HOME= #optional
+      - USER=${USER}
+      - PASS=${PASS}
+      - WHITELIST= #optional
+      - PEERPORT= #optional
+      - HOST_WHITELIST= #optional
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./config/transmission:/config
+      - ./data/torrents:/downloads
+      # - ./data/downloads/complete:/downloads/complete
+      # - ./data/downloads/incomplete:/downloads/incomplete
+      # - ./data/transmission/watch:/watch
+
+  jellyfin:
+    image: linuxserver/jellyfin:latest
+    container_name: jellyfin
+    restart: unless-stopped
+    network_mode: host
+    # ports:
+    #   - 8096:8096
+    #   - 8920:8920 #optional
+    #   - 7359:7359/udp #optional
+    #   - 1900:1900/udp #optional
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - JELLYFIN_PublishedServerUrl=http://${STATIC_IP}:8096 #optional
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./config/jellyfin:/config
+      - ./data/series:/data/tvshows
+      - ./data/movies:/data/movies
+    devices:
+      - /dev/video10:/dev/video10
+      - /dev/video11:/dev/video11
+      - /dev/video12:/dev/video12
+      - /dev/video13:/dev/video13
+      - /dev/video14:/dev/video14
+      - /dev/video15:/dev/video15
+      - /dev/video16:/dev/video16
+      - /dev/video18:/dev/video18
+      - /dev/video19:/dev/video19
