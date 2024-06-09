@@ -71,19 +71,13 @@ services:
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
-      - TRANSMISSION_WEB_HOME= #optional
-      - USER=${USER}
-      - PASS=${PASS}
-      - WHITELIST= #optional
+      - USER=${TRANSMISSION_USER}
+      - PASS=${TRANSMISSION_PASS}
       - PEERPORT=${TRANSMISSION_PEERPORT}
-      - HOST_WHITELIST= #optional
       - TZ=${TZ}
     volumes:
       - ./config/transmission:/config
-      - ./data/torrents:/downloads
-      # - ./data/downloads/complete:/downloads/complete
-      # - ./data/downloads/incomplete:/downloads/incomplete
-      # - ./data/transmission/watch:/watch
+      - ./data/downloads:/downloads
     ports:
       - ${TRANSMISSION_PEERPORT}:${TRANSMISSION_PEERPORT}
       - ${TRANSMISSION_PEERPORT}:${TRANSMISSION_PEERPORT}/udp
