@@ -1,1 +1,4 @@
-data
+infra/data
+infra/config
+servarr/data
+infra/config
