@@ -1,55 +1,6 @@
 version: "3.8"
 services:
 
-  homer:
-    image: b4bz/homer:latest
-    container_name: homer
-    restart: unless-stopped
-    ports:
-      - 8081:8080
-    environment:
-      - INIT_ASSETS=1
-      # - SUBFOLDER=null
-    volumes:
-    - ./config/homer:/www/assets
-
-  nginx:
-    image: linuxserver/nginx:latest
-    container_name: nginx
-    restart: unless-stopped
-    ports:
-      - 80:80
-      - 443:443
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - ./config/nginx:/config
-
-  pihole:
-    image: pihole/pihole:latest
-    container_name: pihole
-    restart: unless-stopped
-    ports:
-      # ensure rpi's /etc/resolvconf.conf has "name_servers=127.0.0.1"
-      - 53:53/tcp
-      - 53:53/udp
-      # or use STATIC_IP below
-      # - ${STATIC_IP}:53:53/tcp
-      # - ${STATIC_IP}:53:53/udp
-      - 67:67/udp
-      - 8080:80/tcp
-    environment:
-      - TZ=${TZ}
-      - WEBPASSWORD=
-    volumes:
-      - ./config/pihole/etc-pihole:/etc/pihole
-      - ./config/pihole/etc-dnsmasq.d:/etc/dnsmasq.d
-    cap_add:
-      - NET_ADMIN
-
   radarr:
     image: linuxserver/radarr:latest
     container_name: radarr
