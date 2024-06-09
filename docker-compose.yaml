@@ -97,7 +97,7 @@ services:
       - TZ=${TZ}
     volumes:
       - ./config/jellyfin:/config
-      - ./data/series:/data/tvshows
+      - ./data/tvshows:/data/tvshows
       - ./data/movies:/data/movies
     devices:
       - /dev/video10:/dev/video10
