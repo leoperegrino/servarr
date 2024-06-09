@@ -5,8 +5,6 @@ services:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
     restart: unless-stopped
-    ports:
-      - 7878:7878
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -14,6 +12,8 @@ services:
     volumes:
       - ./config/radarr:/config
       - ./data:/data
+    # ports:
+    #   - 7878:7878
     networks:
       - nginx
 
@@ -21,8 +21,6 @@ services:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
     restart: unless-stopped
-    ports:
-      - 8989:8989
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -30,6 +28,8 @@ services:
     volumes:
       - ./config/sonarr:/config
       - ./data:/data
+    # ports:
+    #   - 8989:8989
     networks:
       - nginx
 
@@ -37,14 +37,14 @@ services:
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
     restart: unless-stopped
-    ports:
-      - 9696:9696
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
       - ./config/prowlarr:/config
+    # ports:
+    #   - 9696:9696
     networks:
       - nginx
 
@@ -52,8 +52,6 @@ services:
     image: lscr.io/linuxserver/bazarr:latest
     container_name: bazarr
     restart: unless-stopped
-    ports:
-      - 6767:6767
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -61,6 +59,8 @@ services:
     volumes:
       - ./config/bazarr:/config
       - ./data:/data
+    # ports:
+    #   - 6767:6767
     networks:
       - nginx
 
@@ -68,10 +68,6 @@ services:
     image: lscr.io/linuxserver/transmission:latest
     container_name: transmission
     restart: unless-stopped
-    ports:
-      - 9091:9091
-      - 51413:51413
-      - 51413:51413/udp
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -79,7 +75,7 @@ services:
       - USER=${USER}
       - PASS=${PASS}
       - WHITELIST= #optional
-      - PEERPORT= #optional
+      - PEERPORT=${TRANSMISSION_PEERPORT}
       - HOST_WHITELIST= #optional
       - TZ=${TZ}
     volumes:
@@ -88,6 +84,10 @@ services:
       # - ./data/downloads/complete:/downloads/complete
       # - ./data/downloads/incomplete:/downloads/incomplete
       # - ./data/transmission/watch:/watch
+    ports:
+      - ${TRANSMISSION_PEERPORT}:${TRANSMISSION_PEERPORT}
+      - ${TRANSMISSION_PEERPORT}:${TRANSMISSION_PEERPORT}/udp
+      # - 9091:9091
     networks:
       - nginx
 
@@ -95,12 +95,6 @@ services:
     image: lscr.io/linuxserver/jellyfin:latest
     container_name: jellyfin
     restart: unless-stopped
-    network_mode: host
-    # ports:
-    #   - 8096:8096
-    #   - 8920:8920 #optional
-    #   - 7359:7359/udp #optional
-    #   - 1900:1900/udp #optional
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -120,6 +114,11 @@ services:
       - /dev/video16:/dev/video16
       - /dev/video18:/dev/video18
       - /dev/video19:/dev/video19
+    ports:
+      - 8096:8096
+      # - 8920:8920     # optional https
+      # - 7359:7359/udp # optional local discovery
+      # - 1900:1900/udp # optional dnla
     networks:
       - nginx
 
