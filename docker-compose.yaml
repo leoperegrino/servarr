@@ -2,7 +2,7 @@ version: "3.8"
 services:
 
   radarr:
-    image: linuxserver/radarr:latest
+    image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
     restart: unless-stopped
     ports:
@@ -16,7 +16,7 @@ services:
       - ./data:/data
 
   sonarr:
-    image: linuxserver/sonarr:latest
+    image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
     restart: unless-stopped
     ports:
@@ -30,7 +30,7 @@ services:
       - ./data:/data
 
   prowlarr:
-    image: linuxserver/prowlarr:latest
+    image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
     restart: unless-stopped
     ports:
@@ -43,7 +43,7 @@ services:
       - ./config/prowlarr:/config
 
   bazarr:
-    image: linuxserver/bazarr:latest
+    image: lscr.io/linuxserver/bazarr:latest
     container_name: bazarr
     restart: unless-stopped
     ports:
@@ -58,7 +58,7 @@ services:
       - ./data:/data
 
   transmission:
-    image: linuxserver/transmission:latest
+    image: lscr.io/linuxserver/transmission:latest
     container_name: transmission
     restart: unless-stopped
     ports:
@@ -83,7 +83,7 @@ services:
       # - ./data/transmission/watch:/watch
 
   jellyfin:
-    image: linuxserver/jellyfin:latest
+    image: lscr.io/linuxserver/jellyfin:latest
     container_name: jellyfin
     restart: unless-stopped
     network_mode: host
