@@ -10,8 +10,8 @@ services:
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
+      - TZ=${TZ}
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - ./config/radarr:/config
       - ./data:/data
     networks:
@@ -26,8 +26,8 @@ services:
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
+      - TZ=${TZ}
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - ./config/sonarr:/config
       - ./data:/data
     networks:
@@ -42,8 +42,8 @@ services:
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
+      - TZ=${TZ}
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - ./config/prowlarr:/config
     networks:
       - nginx
@@ -55,11 +55,10 @@ services:
     ports:
       - 6767:6767
     environment:
-      - TZ=${TZ}
       - PUID=${PUID}
       - PGID=${PGID}
+      - TZ=${TZ}
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - ./config/bazarr:/config
       - ./data:/data
     networks:
@@ -82,8 +81,8 @@ services:
       - WHITELIST= #optional
       - PEERPORT= #optional
       - HOST_WHITELIST= #optional
+      - TZ=${TZ}
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - ./config/transmission:/config
       - ./data/torrents:/downloads
       # - ./data/downloads/complete:/downloads/complete
@@ -106,8 +105,8 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - JELLYFIN_PublishedServerUrl=http://${STATIC_IP}:8096 #optional
+      - TZ=${TZ}
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - ./config/jellyfin:/config
       - ./data/series:/data/tvshows
       - ./data/movies:/data/movies
