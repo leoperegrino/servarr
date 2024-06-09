@@ -14,6 +14,8 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - ./config/radarr:/config
       - ./data:/data
+    networks:
+      - nginx
 
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
@@ -28,6 +30,8 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - ./config/sonarr:/config
       - ./data:/data
+    networks:
+      - nginx
 
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:latest
@@ -41,6 +45,8 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./config/prowlarr:/config
+    networks:
+      - nginx
 
   bazarr:
     image: lscr.io/linuxserver/bazarr:latest
@@ -56,6 +62,8 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - ./config/bazarr:/config
       - ./data:/data
+    networks:
+      - nginx
 
   transmission:
     image: lscr.io/linuxserver/transmission:latest
@@ -81,6 +89,8 @@ services:
       # - ./data/downloads/complete:/downloads/complete
       # - ./data/downloads/incomplete:/downloads/incomplete
       # - ./data/transmission/watch:/watch
+    networks:
+      - nginx
 
   jellyfin:
     image: lscr.io/linuxserver/jellyfin:latest
@@ -111,3 +121,9 @@ services:
       - /dev/video16:/dev/video16
       - /dev/video18:/dev/video18
       - /dev/video19:/dev/video19
+    networks:
+      - nginx
+
+networks:
+    nginx:
+      external: true
