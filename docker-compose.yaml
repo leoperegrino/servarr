@@ -58,7 +58,8 @@ services:
       - TZ=${TZ}
     volumes:
       - ./config/bazarr:/config
-      - ./data:/data
+      - ./data/tvshows:/data/tvshows
+      - ./data/movies:/data/movies
     # ports:
     #   - 6767:6767
     networks:
