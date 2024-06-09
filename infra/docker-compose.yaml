@@ -1,1 +1,111 @@
+version: "3.8"
+services:
 
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    restart: unless-stopped
+    command: --cleanup --schedule '0 0 4 * * *'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  homer:
+    image: b4bz/homer:latest
+    container_name: homer
+    restart: unless-stopped
+    environment:
+      - INIT_ASSETS=1
+    # ports:
+    #   - 8080:8080
+    volumes:
+    - ./config/homer:/www/assets
+
+  swag:
+    image: lscr.io/linuxserver/swag:latest
+    restart: unless-stopped
+    container_name: swag
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - URL=${SWAG_URL}
+      - VALIDATION=${SWAG_VALIDATION}
+      - DNSPLUGIN=${SWAG_DNSPLUGIN}
+      - SUBDOMAINS=${SWAG_SUBDOMAINS}
+      - ONLY_SUBDOMAINS=${SWAG_ONLY_SUBDOMAINS}
+      - EXTRA_DOMAINS=${SWAG_EXTRA_DOMAINS}
+      - STAGING=false
+      - DOCKER_MODS=linuxserver/mods:swag-dbip|linuxserver/mods:swag-dashboard
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./config/swag:/config
+
+  duckdns:
+    image: lscr.io/linuxserver/duckdns:latest
+    container_name: duckdns
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - SUBDOMAINS=${DUCKDNS_SUBDOMAINS}
+      - TOKEN=${DUCKDNS_TOKEN}
+      - LOG_FILE=true
+    volumes:
+      - ./config/duckdns:/config
+
+  pihole:
+    image: pihole/pihole:latest
+    container_name: pihole
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - TZ=${TZ}
+      - WEBPASSWORD=${PIHOLE_PASS}
+      - WEBTHEME=default-darker
+    ports:
+      # ensure rpi's /etc/resolvconf.conf has "name_servers=127.0.0.1"
+      - 53:53/tcp
+      - 53:53/udp
+      # - 67:67/udp  # optional DHCP
+      # - 8081:80/tcp
+    volumes:
+      - ./config/pihole/etc-pihole:/etc/pihole
+      - ./config/pihole/etc-dnsmasq.d:/etc/dnsmasq.d
+
+  wireguard:
+    image: lscr.io/linuxserver/wireguard:latest
+    container_name: wireguard
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - SERVERURL=${WG_SERVERURL}
+      - SERVERPORT=${WG_SERVERPORT}
+      - PEERS=${WG_PEERS}
+      - PEERDNS=auto
+      - INTERNAL_SUBNET=10.13.13.0
+      - ALLOWEDIPS=0.0.0.0/0
+      - PERSISTENTKEEPALIVE_PEERS=
+      - LOG_CONFS=true
+    volumes:
+      - ./config/wireguard:/config
+      - /lib/modules:/lib/modules
+    ports:
+      - ${WG_SERVERPORT}:51820/udp
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+
+
+networks:
+  default:
+    name: nginx
