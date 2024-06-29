@@ -1,3 +1,8 @@
+networks:
+  default:
+    name: nginx
+
+
 services:
 
   watchtower:
@@ -103,8 +108,3 @@ services:
       - ${WG_SERVERPORT}:51820/udp
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
-
-
-networks:
-  default:
-    name: nginx

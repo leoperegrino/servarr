@@ -1,3 +1,8 @@
+networks:
+    nginx:
+      external: true
+
+
 services:
 
   radarr:
@@ -115,7 +120,3 @@ services:
       # - 1900:1900/udp # optional dnla
     networks:
       - nginx
-
-networks:
-    nginx:
-      external: true
